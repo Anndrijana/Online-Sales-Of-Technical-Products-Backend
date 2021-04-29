@@ -1,17 +1,36 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Index('uq_administrator_username', ['username'], { unique: true })
+@Entity('administrator', { schema: 'technical_products_store' })
 export class Administrator {
   @PrimaryGeneratedColumn({
-    name: 'administrator_id',
     type: 'int',
+    name: 'administrator_id',
     unsigned: true,
   })
   administratorId: number;
 
-  @Column({ type: 'varchar', length: '32', unique: true })
+  @Column('varchar', {
+    name: 'username',
+    unique: true,
+    length: 32,
+    default: () => "'0'",
+  })
   username: string;
 
-  @Column({ name: 'password_hash', type: 'varchar', length: '128' })
+  @Column('varchar', {
+    name: 'password_hash',
+    length: 128,
+    default: () => "'0'",
+  })
   passwordHash: string;
+
+  @Column('tinyint', { name: 'is_active', width: 1, default: () => "'0'" })
+  isActive: boolean;
+
+  @Column('timestamp', {
+    name: 'created_at',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date;
 }
