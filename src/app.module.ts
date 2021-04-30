@@ -1,6 +1,6 @@
 import { ProductShoppingCart } from './../entities/product-shoppingCart.entity';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
+import { AppController } from './ctrls/app.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from './../config/database.configuration';
 import { Administrator } from 'entities/administrator.entity';
@@ -14,6 +14,7 @@ import { Price } from 'entities/price.entity';
 import { ProductFeature } from 'entities/product-feature.entity';
 import { Product } from 'entities/product.entity';
 import { ShoppingCart } from 'entities/shoppingCart.entity';
+import { AdministratorController } from './ctrls/api/administrator.ctrl';
 
 @Module({
   imports: [
@@ -40,7 +41,7 @@ import { ShoppingCart } from 'entities/shoppingCart.entity';
     }),
     TypeOrmModule.forFeature([Administrator]),
   ],
-  controllers: [AppController],
+  controllers: [AppController, AdministratorController],
   providers: [AdministratorService],
 })
 export class AppModule {}
