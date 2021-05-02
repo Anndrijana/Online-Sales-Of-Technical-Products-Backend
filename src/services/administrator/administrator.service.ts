@@ -5,6 +5,9 @@ import { Administrator } from 'entities/administrator.entity';
 import { AddingAdministratorDto } from 'src/dtos/administrator/adding.administrator.dto';
 import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { resolve } from 'node:path';
+import { ApiResponse } from 'src/apiResponse/api.response';
 
 @Injectable()
 export class AdministratorService {
@@ -21,7 +24,7 @@ export class AdministratorService {
     return this.administrator.findOne(id);
   }
 
-  add(data: AddingAdministratorDto) {
+  add(data: AddingAdministratorDto): Promise<Administrator | ApiResponse> {
     const passwordHash = crypto.createHash('sha512');
     passwordHash.update(data.password);
 
@@ -31,19 +34,39 @@ export class AdministratorService {
     newAdministrator.username = data.username;
     newAdministrator.passwordHash = passwordHashString;
 
-    return this.administrator.save(newAdministrator);
+    return new Promise((resolve) => {
+      this.administrator
+        .save(newAdministrator)
+        .then((data) => resolve(data))
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        .catch((error) => {
+          const response: ApiResponse = new ApiResponse('error', -300);
+          resolve(response);
+        });
+    });
   }
 
-  async editById(id: number, data: EditingAdministratorDto) {
-    const currentAdmin: Administrator = await this.administrator.findOne(id);
+  async editById(
+    id: number,
+    data: EditingAdministratorDto,
+  ): Promise<Administrator | ApiResponse> {
+    const currentAdministrator: Administrator = await this.administrator.findOne(
+      id,
+    );
+
+    if (currentAdministrator === undefined) {
+      return new Promise((resolve) => {
+        resolve(new ApiResponse('error', -3001));
+      });
+    }
 
     const passwordHash = crypto.createHash('sha512');
     passwordHash.update(data.password);
 
     const passwordHashString = passwordHash.digest('hex');
 
-    currentAdmin.passwordHash = passwordHashString;
+    currentAdministrator.passwordHash = passwordHashString;
 
-    return this.administrator.save(currentAdmin);
+    return this.administrator.save(currentAdministrator);
   }
 }
