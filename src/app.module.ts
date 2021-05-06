@@ -1,3 +1,5 @@
+import { CategoryService } from './services/category/category.service';
+import { CategoryController } from './ctrls/api/category.ctrl';
 import { ProductShoppingCart } from './../entities/product-shoppingCart.entity';
 import { Module } from '@nestjs/common';
 import { AppController } from './ctrls/app.controller';
@@ -15,6 +17,8 @@ import { ProductFeature } from 'entities/product-feature.entity';
 import { Product } from 'entities/product.entity';
 import { ShoppingCart } from 'entities/shoppingCart.entity';
 import { AdministratorController } from './ctrls/api/administrator.ctrl';
+import { ProductService } from './services/product/product.service';
+import { ProductController } from './ctrls/api/product.ctrl';
 
 @Module({
   imports: [
@@ -39,9 +43,20 @@ import { AdministratorController } from './ctrls/api/administrator.ctrl';
         ShoppingCart,
       ],
     }),
-    TypeOrmModule.forFeature([Administrator]),
+    TypeOrmModule.forFeature([
+      Administrator,
+      Category,
+      Product,
+      Price,
+      ProductFeature,
+    ]),
   ],
-  controllers: [AppController, AdministratorController],
-  providers: [AdministratorService],
+  controllers: [
+    AppController,
+    AdministratorController,
+    CategoryController,
+    ProductController,
+  ],
+  providers: [AdministratorService, CategoryService, ProductService],
 })
 export class AppModule {}
