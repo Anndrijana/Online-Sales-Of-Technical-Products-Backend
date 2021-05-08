@@ -24,6 +24,18 @@ export class AdministratorService {
     return this.administrator.findOne(id);
   }
 
+  async getByUsername(findUsername: string): Promise<Administrator | null> {
+    const administrator = await this.administrator.findOne({
+      username: findUsername,
+    });
+
+    if (administrator) {
+      return administrator;
+    }
+
+    return null;
+  }
+
   add(data: AddingAdministratorDto): Promise<Administrator | ApiResponse> {
     const passwordHash = crypto.createHash('sha512');
     passwordHash.update(data.password);

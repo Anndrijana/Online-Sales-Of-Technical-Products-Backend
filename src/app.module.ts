@@ -19,6 +19,7 @@ import { ShoppingCart } from 'entities/shoppingCart.entity';
 import { AdministratorController } from './ctrls/api/administrator.ctrl';
 import { ProductService } from './services/product/product.service';
 import { ProductController } from './ctrls/api/product.ctrl';
+import { AuthController } from './ctrls/api/auth.ctrl';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { ProductController } from './ctrls/api/product.ctrl';
     AdministratorController,
     CategoryController,
     ProductController,
+    AuthController,
   ],
   providers: [AdministratorService, CategoryService, ProductService],
 })
