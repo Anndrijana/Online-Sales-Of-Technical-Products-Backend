@@ -7,17 +7,16 @@ import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { resolve } from 'node:path';
-import { ApiResponse } from 'src/apiResponse/api.response';
+import { ApiResponse } from 'src/response/api.response';
+import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 
 @Injectable()
-export class AdministratorService {
+export class AdministratorService extends TypeOrmCrudService<Administrator> {
   constructor(
     @InjectRepository(Administrator)
     private readonly administrator: Repository<Administrator>,
-  ) {}
-
-  getAll(): Promise<Administrator[]> {
-    return this.administrator.find();
+  ) {
+    super(administrator);
   }
 
   getById(id: number): Promise<Administrator> {
@@ -52,7 +51,11 @@ export class AdministratorService {
         .then((data) => resolve(data))
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .catch((error) => {
-          const response: ApiResponse = new ApiResponse('error', -300);
+          const response: ApiResponse = new ApiResponse(
+            'error',
+            -300,
+            'Ovaj administrator već postoji!',
+          );
           resolve(response);
         });
     });
@@ -68,7 +71,13 @@ export class AdministratorService {
 
     if (currentAdministrator === undefined) {
       return new Promise((resolve) => {
-        resolve(new ApiResponse('error', -3001));
+        resolve(
+          new ApiResponse(
+            'error',
+            -3001,
+            'Administrator sa traženim id-jem ne postoji!',
+          ),
+        );
       });
     }
 

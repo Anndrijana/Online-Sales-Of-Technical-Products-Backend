@@ -1,7 +1,7 @@
 import { Body, Controller, Put } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { Product } from 'entities/product.entity';
-import { ApiResponse } from 'src/apiResponse/api.response';
+import { ApiResponse } from 'src/response/api.response';
 import { AddingProductDto } from 'src/dtos/product/adding.product.dto';
 import { ProductService } from 'src/services/product/product.service';
 

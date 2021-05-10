@@ -62,7 +62,7 @@ export class Customer {
   })
   createdAt: Date;
 
-  @Column('tinyint', { name: 'is_active', width: 1, default: () => "'0'" })
+  @Column('tinyint', { name: 'is_active', width: 1, default: () => "'1'" })
   isActive: boolean;
 
   @Column('varchar', {

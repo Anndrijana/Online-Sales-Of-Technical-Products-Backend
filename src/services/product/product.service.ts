@@ -4,7 +4,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Price } from 'entities/price.entity';
 import { ProductFeature } from 'entities/product-feature.entity';
 import { Product } from 'entities/product.entity';
-import { ApiResponse } from 'src/apiResponse/api.response';
+import { ApiResponse } from 'src/response/api.response';
 import { AddingProductDto } from 'src/dtos/product/adding.product.dto';
 import { Repository } from 'typeorm';
 
