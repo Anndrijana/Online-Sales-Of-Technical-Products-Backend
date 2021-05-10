@@ -39,19 +39,21 @@ export class AuthController {
     }
 
     const jwtData = new JwtDataAdministratorDto();
-    jwtData.administratorId = administrator.administratorId;
-    jwtData.username = administrator.username;
+    jwtData.id = administrator.administratorId;
+    jwtData.identity = administrator.username;
     const currentDate = new Date();
     currentDate.setDate(currentDate.getDate() + 14);
     const ed = currentDate.getTime() / 1000;
-    jwtData.expiryDate = ed;
-    jwtData.ipAddress = req.ip.toString();
-    jwtData.userAgent = req.headers['user-agent'];
+    jwtData.exp = ed;
+    jwtData.ip = req.ip.toString();
+    jwtData.ua = req.headers['user-agent'];
+    console.log(jwtData);
 
     const token: string = jwt.sign(
       jwtData.toPlainObject(),
       jwtSecretInformation,
     );
+    console.log(token);
 
     const responseObj = new LoginInformationAdministratorDto(
       administrator.administratorId,

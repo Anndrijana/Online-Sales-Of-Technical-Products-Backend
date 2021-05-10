@@ -1,6 +1,5 @@
 import { FeatureController } from './ctrls/api/feature.ctrl';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-//import { AuthenticationMiddleware } from './middlewares/authentication.middleware';
 import { CategoryService } from './services/category/category.service';
 import { CategoryController } from './ctrls/api/category.ctrl';
 import { ProductShoppingCart } from './../entities/product-shoppingCart.entity';
@@ -29,6 +28,7 @@ import { CustomerService } from './services/customer/customer.service';
 import { FeatureService } from './services/feature/feature.service';
 import { PriceController } from './ctrls/api/price.ctrl';
 import { PriceService } from './services/price/price.service';
+import { AuthMiddleware } from './middlewares/auth.middleware';
 
 @Module({
   imports: [
@@ -84,11 +84,8 @@ import { PriceService } from './services/price/price.service';
   ],
   exports: [AdministratorService],
 })
-export class AppModule {}
-/*implements NestModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthenticationMiddleware)
-      .exclude('auth/*')
-      .forRoutes('api/*');
-  }*/
+    consumer.apply(AuthMiddleware).exclude('auth/*').forRoutes('api/*');
+  }
+}

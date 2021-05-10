@@ -11,25 +11,26 @@ import * as jwt from 'jsonwebtoken';
 import { jwtSecretInformation } from 'config/jwt.secret.information';
 
 @Injectable()
-export class AuthenticationMiddleware implements NestMiddleware {
+export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly administratorService: AdministratorService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     if (!req.headers.authorization) {
-      throw new HttpException('Token not found', HttpStatus.UNAUTHORIZED);
+      throw new HttpException(
+        'Nije pronađen odgovarajući token!',
+        HttpStatus.UNAUTHORIZED,
+      );
     }
 
     const token = req.headers.authorization;
+    console.log(token);
+    console.log(typeof token);
 
-    const tokenParts = token.split(' ');
-    if (tokenParts.length !== 2) {
-      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
-    }
-    const tokenString = tokenParts[1];
-
-    let jwtData: JwtDataAdministratorDto;
-
-    jwt.verify(tokenString, jwtSecretInformation);
+    const jwtData: JwtDataAdministratorDto = jwt.verify(
+      token,
+      jwtSecretInformation,
+    ) as any;
+    console.log(jwtData);
 
     if (!jwtData) {
       throw new HttpException(
@@ -38,23 +39,21 @@ export class AuthenticationMiddleware implements NestMiddleware {
       );
     }
 
-    if (jwtData.ipAddress !== req.ip.toString()) {
+    if (jwtData.ip !== req.ip.toString()) {
       throw new HttpException(
         'Nije pronađen odgovarajući token!',
         HttpStatus.UNAUTHORIZED,
       );
     }
 
-    if (jwtData.userAgent !== req.headers['user-agent']) {
+    if (jwtData.ua !== req.headers['user-agent']) {
       throw new HttpException(
         'Nije pronađen odgovarajući token!',
         HttpStatus.UNAUTHORIZED,
       );
     }
 
-    const administrator = await this.administratorService.getById(
-      jwtData.administratorId,
-    );
+    const administrator = await this.administratorService.getById(jwtData.id);
     if (!administrator) {
       throw new HttpException(
         'Nalog administratora nije pronađen!',
@@ -64,7 +63,7 @@ export class AuthenticationMiddleware implements NestMiddleware {
 
     const currentTimestamp = new Date().getTime() / 1000;
 
-    if (currentTimestamp >= jwtData.expiryDate) {
+    if (currentTimestamp >= jwtData.exp) {
       throw new HttpException('Token je istekao!', HttpStatus.UNAUTHORIZED);
     }
     next();
