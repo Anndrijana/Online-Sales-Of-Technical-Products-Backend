@@ -1,4 +1,4 @@
-/*import { JwtDataAdministratorDto } from 'src/dtos/administrator/jwt.data.administrator.dto';
+import { JwtDataAdministratorDto } from 'src/dtos/administrator/jwt.data.administrator.dto';
 import {
   HttpException,
   HttpStatus,
@@ -16,21 +16,20 @@ export class AuthenticationMiddleware implements NestMiddleware {
 
   async use(req: Request, res: Response, next: NextFunction) {
     if (!req.headers.authorization) {
-      throw new HttpException('Token nije pronađen!', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Token not found', HttpStatus.UNAUTHORIZED);
     }
 
     const token = req.headers.authorization;
 
+    const tokenParts = token.split(' ');
+    if (tokenParts.length !== 2) {
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+    }
+    const tokenString = tokenParts[1];
+
     let jwtData: JwtDataAdministratorDto;
 
-    try {
-      jwtData = jwt.verify(token, jwtSecretInformation);
-    } catch (e) {
-      throw new HttpException(
-        'Nije pronađen odgovarajući token!',
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
+    jwt.verify(tokenString, jwtSecretInformation);
 
     if (!jwtData) {
       throw new HttpException(
@@ -70,4 +69,4 @@ export class AuthenticationMiddleware implements NestMiddleware {
     }
     next();
   }
-}*/
+}

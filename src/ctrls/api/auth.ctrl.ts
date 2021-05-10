@@ -42,7 +42,7 @@ export class AuthController {
     jwtData.administratorId = administrator.administratorId;
     jwtData.username = administrator.username;
     const currentDate = new Date();
-    currentDate.setDate(currentDate.getDate() + 7);
+    currentDate.setDate(currentDate.getDate() + 14);
     const ed = currentDate.getTime() / 1000;
     jwtData.expiryDate = ed;
     jwtData.ipAddress = req.ip.toString();
