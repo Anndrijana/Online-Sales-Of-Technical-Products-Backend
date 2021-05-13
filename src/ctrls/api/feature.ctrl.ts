@@ -18,7 +18,11 @@ import { ApiResponse } from 'src/response/api.response';
     },
   },
   query: {
-    join: {},
+    join: {
+      category: {
+        eager: true,
+      },
+    },
   },
 })
 export class FeatureController {

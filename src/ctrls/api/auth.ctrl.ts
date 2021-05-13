@@ -1,17 +1,27 @@
 import { LoginInformationAdministratorDto } from './../../dtos/administrator/login.information.administrator.dto';
 import { LoginAdministratorDto } from './../../dtos/administrator/login.administrator.dto';
 import { AdministratorService } from './../../services/administrator/administrator.service';
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Post, Put, Req } from '@nestjs/common';
 import { ApiResponse } from 'src/response/api.response';
 import * as jwt from 'jsonwebtoken';
 import { Request } from 'express';
 import { jwtSecretInformation } from 'config/jwt.secret.information';
 import * as crypto from 'crypto';
 import { JwtDataAdministratorDto } from 'src/dtos/administrator/jwt.data.administrator.dto';
+import { CustomerRegistrationDto } from 'src/dtos/customer/customer.registration.dto';
+import { CustomerService } from 'src/services/customer/customer.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(public administratorService: AdministratorService) {}
+  constructor(
+    public administratorService: AdministratorService,
+    public customerService: CustomerService,
+  ) {}
+
+  @Put('customer/register')
+  async customerRegister(@Body() data: CustomerRegistrationDto) {
+    return await this.customerService.registerCustomer(data);
+  }
 
   @Post('login')
   async login(

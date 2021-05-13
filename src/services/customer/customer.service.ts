@@ -8,6 +8,7 @@ import { ApiResponse } from 'src/response/api.response';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Customer } from 'entities/customer.entity';
 import { AddingAndEditingCustomerDto } from 'src/dtos/customer/adding.editing.customer.dto';
+import { CustomerRegistrationDto } from 'src/dtos/customer/customer.registration.dto';
 
 @Injectable()
 export class CustomerService extends TypeOrmCrudService<Customer> {
@@ -85,5 +86,39 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
     currentCustomer.passwordResetLink = data.passwordResetLink;
 
     return this.customer.save(currentCustomer);
+  }
+
+  async registerCustomer(
+    data: CustomerRegistrationDto,
+  ): Promise<Customer | ApiResponse> {
+    const passwordHash = crypto.createHash('sha512');
+    passwordHash.update(data.password);
+    const passwordHashString = passwordHash.digest('hex');
+
+    const newCustomer: Customer = new Customer();
+    newCustomer.email = data.email;
+    newCustomer.passwordHash = passwordHashString;
+    newCustomer.forename = data.forename;
+    newCustomer.surname = data.surname;
+    newCustomer.phoneNumber = data.phoneNumber;
+    newCustomer.address = data.address;
+    newCustomer.city = data.city;
+    newCustomer.postalAddress = data.postalAddress;
+
+    try {
+      const savedCustomer = await this.customer.save(newCustomer);
+
+      if (!savedCustomer) {
+        throw new Error('');
+      }
+
+      return savedCustomer;
+    } catch (e) {
+      return new ApiResponse(
+        'error',
+        -3006,
+        'Ovaj korisnički nalog već postoji!',
+      );
+    }
   }
 }

@@ -87,7 +87,7 @@ import { ImageService } from './services/image/image.service';
     PriceService,
     ImageService,
   ],
-  exports: [AdministratorService],
+  exports: [AdministratorService, CustomerService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
