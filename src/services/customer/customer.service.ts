@@ -19,6 +19,18 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
     super(customer);
   }
 
+  async getByEmail(findEmail: string): Promise<Customer | null> {
+    const customer = await this.customer.findOne({
+      email: findEmail,
+    });
+
+    if (customer) {
+      return customer;
+    }
+
+    return null;
+  }
+
   add(data: AddingAndEditingCustomerDto): Promise<Customer | ApiResponse> {
     const passwordHash = crypto.createHash('sha512');
     passwordHash.update(data.password);

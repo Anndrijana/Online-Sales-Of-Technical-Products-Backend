@@ -39,21 +39,23 @@ export class AuthMiddleware implements NestMiddleware {
       );
     }
 
-    if (jwtData.ip !== req.ip.toString()) {
+    if (jwtData.ipAddress !== req.ip.toString()) {
       throw new HttpException(
         'Nije pronađen odgovarajući token!',
         HttpStatus.UNAUTHORIZED,
       );
     }
 
-    if (jwtData.ua !== req.headers['user-agent']) {
+    if (jwtData.userAgent !== req.headers['user-agent']) {
       throw new HttpException(
         'Nije pronađen odgovarajući token!',
         HttpStatus.UNAUTHORIZED,
       );
     }
 
-    const administrator = await this.administratorService.getById(jwtData.id);
+    const administrator = await this.administratorService.getById(
+      jwtData.administratorId,
+    );
     if (!administrator) {
       throw new HttpException(
         'Nalog administratora nije pronađen!',
@@ -63,7 +65,7 @@ export class AuthMiddleware implements NestMiddleware {
 
     const currentTimestamp = new Date().getTime() / 1000;
 
-    if (currentTimestamp >= jwtData.exp) {
+    if (currentTimestamp >= jwtData.expiryDate) {
       throw new HttpException('Token je istekao!', HttpStatus.UNAUTHORIZED);
     }
     next();
