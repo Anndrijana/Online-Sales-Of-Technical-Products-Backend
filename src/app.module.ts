@@ -28,8 +28,12 @@ import { CustomerService } from './services/customer/customer.service';
 import { FeatureService } from './services/feature/feature.service';
 import { PriceController } from './ctrls/api/price.ctrl';
 import { PriceService } from './services/price/price.service';
-import { AuthMiddleware } from './middlewares/auth.middleware';
+//import { AuthMiddleware } from './middlewares/auth.middleware';
 import { ImageService } from './services/image/image.service';
+import { ShoppingCartController } from './ctrls/api/shoppigCart.ctrl';
+import { ShoppingCartService } from './services/shoppingCart/shoppingCart.service';
+import { OrderController } from './ctrls/api/order.ctrl';
+import { OrderService } from './services/order/order.service';
 
 @Module({
   imports: [
@@ -77,6 +81,8 @@ import { ImageService } from './services/image/image.service';
     CustomerController,
     FeatureController,
     PriceController,
+    ShoppingCartController,
+    OrderController,
   ],
   providers: [
     AdministratorService,
@@ -86,11 +92,13 @@ import { ImageService } from './services/image/image.service';
     FeatureService,
     PriceService,
     ImageService,
+    ShoppingCartService,
+    OrderService,
   ],
   exports: [AdministratorService, CustomerService],
 })
-export class AppModule implements NestModule {
+export class AppModule {} /*implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).exclude('auth/*').forRoutes('api/*');
   }
-}
+}*/

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { resolve } from 'node:path';
-import { ApiResponse } from 'src/response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Customer } from 'entities/customer.entity';
 import { AddingAndEditingCustomerDto } from 'src/dtos/customer/adding.editing.customer.dto';

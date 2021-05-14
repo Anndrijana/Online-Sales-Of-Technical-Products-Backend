@@ -7,8 +7,8 @@ import { Repository } from 'typeorm';
 import * as crypto from 'crypto';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { resolve } from 'node:path';
-import { ApiResponse } from 'src/response/api.response';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
+import { ApiResponse } from 'src/other/api.response';
 
 @Injectable()
 export class AdministratorService extends TypeOrmCrudService<Administrator> {

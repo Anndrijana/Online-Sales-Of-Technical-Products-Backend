@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Category } from 'entities/category.entity';
 import { AddingAndEditingCategoryDto } from 'src/dtos/category/adding.editing.category.dto';
-import { ApiResponse } from 'src/response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 import { Repository } from 'typeorm';
 
 @Injectable()

@@ -4,9 +4,9 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Price } from 'entities/price.entity';
 import { ProductFeature } from 'entities/product-feature.entity';
 import { Product } from 'entities/product.entity';
-import { ApiResponse } from 'src/response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 import { AddingProductDto } from 'src/dtos/product/adding.product.dto';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 
 @Injectable()
 export class ProductService extends TypeOrmCrudService<Product> {
@@ -51,5 +51,23 @@ export class ProductService extends TypeOrmCrudService<Product> {
     return await this.product.findOne(savedProduct.productId, {
       relations: ['category', 'productFeatures', 'prices'],
     });
+  }
+
+  async delete(id: number): Promise<DeleteResult | ApiResponse> {
+    const currentProduct: Product = await this.product.findOne(id);
+
+    if (currentProduct === undefined) {
+      return new Promise((resolve) => {
+        resolve(
+          new ApiResponse(
+            'error',
+            -3001,
+            'Proizvod sa traženim id-jem ne postoji!',
+          ),
+        );
+      });
+    }
+
+    return await this.product.delete(id);
   }
 }

@@ -2,7 +2,7 @@ import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { Category } from 'entities/category.entity';
 import { AddingAndEditingCategoryDto } from 'src/dtos/category/adding.editing.category.dto';
-import { ApiResponse } from 'src/response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 import { CategoryService } from 'src/services/category/category.service';
 
 @Controller('api/category')

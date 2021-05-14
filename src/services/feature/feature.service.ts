@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Feature } from 'entities/feature.entity';
 import { Repository } from 'typeorm';
-import { ApiResponse } from 'src/response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 
 @Injectable()
 export class FeatureService extends TypeOrmCrudService<Feature> {

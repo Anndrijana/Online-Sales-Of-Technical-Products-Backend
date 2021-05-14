@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 import { EditingAdministratorDto } from '../../dtos/administrator/editing.administrator.dto';
 import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { Administrator } from 'entities/administrator.entity';

@@ -1,4 +1,4 @@
-import { ApiResponse } from '../../response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { Customer } from 'entities/customer.entity';

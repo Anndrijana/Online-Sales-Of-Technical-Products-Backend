@@ -3,7 +3,7 @@ import { Body, Controller, Param, Post, Put } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { Feature } from 'entities/feature.entity';
 import { FeatureService } from 'src/services/feature/feature.service';
-import { ApiResponse } from 'src/response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 
 @Controller('api/feature')
 @Crud({

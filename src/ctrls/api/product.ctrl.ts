@@ -3,6 +3,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Param,
   Post,
   Put,
@@ -11,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { Product } from 'entities/product.entity';
-import { ApiResponse } from 'src/response/api.response';
+import { ApiResponse } from 'src/other/api.response';
 import { AddingProductDto } from 'src/dtos/product/adding.product.dto';
 import { ProductService } from 'src/services/product/product.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -19,6 +20,7 @@ import { diskStorage } from 'multer';
 import { DataStorageConfiguration } from 'config/data.storage.configuration';
 import { ImageService } from 'src/services/image/image.service';
 import { Image } from 'entities/image.entity';
+import { DeleteResult } from 'typeorm';
 
 @Controller('api/product')
 @Crud({
@@ -96,5 +98,10 @@ export class ProductController {
     }
 
     return savedImage;
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id): Promise<DeleteResult | ApiResponse> {
+    return this.service.delete(id);
   }
 }
