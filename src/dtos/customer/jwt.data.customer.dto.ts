@@ -1,17 +1,19 @@
 export class JwtDataCustomerDto {
-  customerId: number;
-  email: string;
-  expiryDate: number;
-  ipAddress: string;
-  userAgent: string;
+  role: 'customer';
+  id: number;
+  identity: string;
+  exp: number;
+  ip: string;
+  ua: string;
 
   toPlainObject() {
     return {
-      id: this.customerId,
-      email: this.email,
-      exp: this.expiryDate,
-      ip: this.ipAddress,
-      ua: this.userAgent,
+      role: this.role,
+      id: this.id,
+      email: this.identity,
+      exp: this.exp,
+      ip: this.ip,
+      ua: this.ua,
     };
   }
 }

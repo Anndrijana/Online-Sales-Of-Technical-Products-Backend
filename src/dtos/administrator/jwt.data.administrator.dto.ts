@@ -1,17 +1,19 @@
 export class JwtDataAdministratorDto {
-  administratorId: number;
-  username: string;
-  expiryDate: number;
-  ipAddress: string;
-  userAgent: string;
+  role: 'administrator';
+  id: number;
+  identity: string;
+  exp: number;
+  ip: string;
+  ua: string;
 
   toPlainObject() {
     return {
-      id: this.administratorId,
-      username: this.username,
-      exp: this.expiryDate,
-      ip: this.ipAddress,
-      ua: this.userAgent,
+      role: this.role,
+      id: this.id,
+      username: this.identity,
+      exp: this.exp,
+      ip: this.ip,
+      ua: this.ua,
     };
   }
 }

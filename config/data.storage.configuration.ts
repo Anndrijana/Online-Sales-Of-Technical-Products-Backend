@@ -1,4 +1,5 @@
 export const DataStorageConfiguration = {
-  imageDest: '../data storage/images/',
-  imageMaxSize: 1024 * 1024 * 5,
+  destination: '../storage/images',
+  urlPrefix: '/assets/images',
+  maxSize: 3 * 1024 * 1024,
 };

@@ -19,6 +19,10 @@ export class AdministratorService extends TypeOrmCrudService<Administrator> {
     super(administrator);
   }
 
+  getAll(): Promise<Administrator[]> {
+    return this.administrator.find();
+  }
+
   getById(id: number): Promise<Administrator> {
     return this.administrator.findOne(id);
   }

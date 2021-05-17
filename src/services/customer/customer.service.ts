@@ -9,6 +9,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Customer } from 'entities/customer.entity';
 import { AddingAndEditingCustomerDto } from 'src/dtos/customer/adding.editing.customer.dto';
 import { CustomerRegistrationDto } from 'src/dtos/customer/customer.registration.dto';
+//import { CustomerRegistrationDto } from 'src/dtos/customer/customer.registration.dto';
 
 @Injectable()
 export class CustomerService extends TypeOrmCrudService<Customer> {
@@ -17,6 +18,10 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
     private readonly customer: Repository<Customer>,
   ) {
     super(customer);
+  }
+
+  async getById(id) {
+    return await this.customer.findOne(id);
   }
 
   async getByEmail(findEmail: string): Promise<Customer | null> {
