@@ -1,11 +1,14 @@
+import { Product } from './product.entity';
 import {
   Column,
   Entity,
   Index,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  JoinTable,
 } from 'typeorm';
 import { Category } from './category.entity';
 import { ProductFeature } from './product-feature.entity';
@@ -31,6 +34,18 @@ export class Feature {
   })
   @JoinColumn([{ name: 'category_id', referencedColumnName: 'categoryId' }])
   category: Category;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @ManyToMany((type) => Product, (product) => product.features)
+  @JoinTable({
+    name: 'product_feature',
+    joinColumn: { name: 'feature_id', referencedColumnName: 'featureId' },
+    inverseJoinColumn: {
+      name: 'product_id',
+      referencedColumnName: 'productId',
+    },
+  })
+  products: Product[];
 
   @OneToMany(() => ProductFeature, (productFeature) => productFeature.feature)
   productFeatures: ProductFeature[];

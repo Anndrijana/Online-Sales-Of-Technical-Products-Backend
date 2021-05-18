@@ -6,12 +6,15 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  JoinTable,
+  ManyToMany,
 } from 'typeorm';
 import { Image } from './image.entity';
 import { Price } from './price.entity';
 import { Category } from './category.entity';
 import { ProductFeature } from './product-feature.entity';
 import { ProductShoppingCart } from './product-shoppingCart.entity';
+import { Feature } from './feature.entity';
 
 @Index('fk_product_category_id', ['categoryId'], {})
 @Entity('product', { schema: 'technical_products_store' })
@@ -66,6 +69,18 @@ export class Product {
   })
   @JoinColumn([{ name: 'category_id', referencedColumnName: 'categoryId' }])
   category: Category;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  @ManyToMany((type) => Feature, (feature) => feature.products)
+  @JoinTable({
+    name: 'product_feature',
+    joinColumn: { name: 'product_id', referencedColumnName: 'productId' },
+    inverseJoinColumn: {
+      name: 'feature_id',
+      referencedColumnName: 'featureId',
+    },
+  })
+  features: Feature[];
 
   @OneToMany(() => ProductFeature, (productFeature) => productFeature.product)
   productFeatures: ProductFeature[];

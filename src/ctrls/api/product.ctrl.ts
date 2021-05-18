@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   Param,
+  Patch,
   Post,
   Put,
   Req,
@@ -26,6 +27,7 @@ import { DeleteResult } from 'typeorm';
 import { AllowToRoles } from 'src/other/allow.to.role.descriptor';
 import * as fs from 'fs';
 import { RolesGuard } from 'src/other/role.checker.guard';
+import { EditingProductDto } from 'src/dtos/product/editing.product.dto';
 
 @Controller('api/product')
 @Crud({
@@ -62,6 +64,13 @@ export class ProductController {
   @Put()
   addProduct(@Body() data: AddingProductDto): Promise<Product | ApiResponse> {
     return this.service.add(data);
+  }
+
+  @Patch(':id')
+  @UseGuards(RolesGuard)
+  @AllowToRoles('administrator')
+  editProduct(@Param('id') id: number, @Body() data: EditingProductDto) {
+    return this.service.editProduct(id, data);
   }
 
   @Post(':id/uploadImage/')
