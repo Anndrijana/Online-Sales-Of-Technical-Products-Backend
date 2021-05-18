@@ -32,6 +32,18 @@ import { RolesGuard } from 'src/other/role.checker.guard';
   query: {
     join: {},
   },
+  routes: {
+    only: ['getOneBase', 'deleteOneBase'],
+    getOneBase: {
+      decorators: [
+        UseGuards(RolesGuard),
+        AllowToRoles('administrator', 'customer'),
+      ],
+    },
+    deleteOneBase: {
+      decorators: [UseGuards(RolesGuard), AllowToRoles('administrator')],
+    },
+  },
 })
 export class AdministratorController {
   constructor(public service: AdministratorService) {}
@@ -51,6 +63,7 @@ export class AdministratorController {
   }
 
   @Post(':id')
+  @AllowToRoles('administrator')
   editAdmin(
     @Param('id') administratorId: number,
     @Body() data: EditingAdministratorDto,

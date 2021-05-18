@@ -30,6 +30,7 @@ import { RolesGuard } from 'src/other/role.checker.guard';
 import { EditingProductDto } from 'src/dtos/product/editing.product.dto';
 
 @Controller('api/product')
+@UseGuards(RolesGuard)
 @Crud({
   model: {
     type: Product,
@@ -54,6 +55,21 @@ import { EditingProductDto } from 'src/dtos/product/editing.product.dto';
       },
     },
   },
+  routes: {
+    only: ['getManyBase', 'getOneBase'],
+    getManyBase: {
+      decorators: [
+        UseGuards(RolesGuard),
+        AllowToRoles('administrator', 'customer'),
+      ],
+    },
+    getOneBase: {
+      decorators: [
+        UseGuards(RolesGuard),
+        AllowToRoles('administrator', 'customer'),
+      ],
+    },
+  },
 })
 export class ProductController {
   constructor(
@@ -62,19 +78,18 @@ export class ProductController {
   ) {}
 
   @Put()
+  @AllowToRoles('administrator')
   addProduct(@Body() data: AddingProductDto): Promise<Product | ApiResponse> {
     return this.service.add(data);
   }
 
   @Patch(':id')
-  @UseGuards(RolesGuard)
   @AllowToRoles('administrator')
   editProduct(@Param('id') id: number, @Body() data: EditingProductDto) {
     return this.service.editProduct(id, data);
   }
 
   @Post(':id/uploadImage/')
-  @UseGuards(RolesGuard)
   @AllowToRoles('administrator')
   @UseInterceptors(
     FileInterceptor('image', {
@@ -120,7 +135,6 @@ export class ProductController {
   }
 
   @Delete(':productId/deleteImage/:imageId')
-  @UseGuards(RolesGuard)
   @AllowToRoles('administrator')
   public async deleteImage(
     @Param('productId') productId: number,
@@ -148,6 +162,7 @@ export class ProductController {
   }
 
   @Delete(':id')
+  @AllowToRoles('administrator')
   async delete(@Param('id') id): Promise<DeleteResult | ApiResponse> {
     return this.service.delete(id);
   }

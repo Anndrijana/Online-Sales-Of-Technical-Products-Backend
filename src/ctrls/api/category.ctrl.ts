@@ -1,11 +1,14 @@
-import { Body, Controller, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { Crud } from '@nestjsx/crud';
 import { Category } from 'entities/category.entity';
 import { AddingAndEditingCategoryDto } from 'src/dtos/category/adding.editing.category.dto';
+import { AllowToRoles } from 'src/other/allow.to.role.descriptor';
 import { ApiResponse } from 'src/other/api.response';
+import { RolesGuard } from 'src/other/role.checker.guard';
 import { CategoryService } from 'src/services/category/category.service';
 
 @Controller('api/category')
+@UseGuards(RolesGuard)
 @Crud({
   model: {
     type: Category,
@@ -27,11 +30,30 @@ import { CategoryService } from 'src/services/category/category.service';
       },
     },
   },
+  routes: {
+    only: ['getManyBase', 'getOneBase', 'deleteOneBase'],
+    getManyBase: {
+      decorators: [
+        UseGuards(RolesGuard),
+        AllowToRoles('administrator', 'customer'),
+      ],
+    },
+    getOneBase: {
+      decorators: [
+        UseGuards(RolesGuard),
+        AllowToRoles('administrator', 'customer'),
+      ],
+    },
+    deleteOneBase: {
+      decorators: [UseGuards(RolesGuard), AllowToRoles('administrator')],
+    },
+  },
 })
 export class CategoryController {
   constructor(public service: CategoryService) {}
 
   @Put()
+  @AllowToRoles('administrator')
   addCategory(
     @Body() data: AddingAndEditingCategoryDto,
   ): Promise<Category | ApiResponse> {
@@ -39,6 +61,7 @@ export class CategoryController {
   }
 
   @Post(':id')
+  @AllowToRoles('administrator')
   editCategory(
     @Param('id') categoryId: number,
     @Body() data: AddingAndEditingCategoryDto,
