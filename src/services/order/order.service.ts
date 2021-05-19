@@ -127,4 +127,21 @@ export class OrderService {
 
     return await this.order.delete(id);
   }
+
+  async changeStatus(
+    orderId: number,
+    newStatus: 'rejected' | 'accepted' | 'shipped' | 'unresolved',
+  ) {
+    const order = await this.getById(orderId);
+
+    if (!order) {
+      return new ApiResponse('error', -9001, 'No such order found!');
+    }
+
+    order.orderStatus = newStatus;
+
+    await this.order.save(order);
+
+    return await this.getById(orderId);
+  }
 }

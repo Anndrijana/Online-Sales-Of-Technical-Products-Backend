@@ -28,6 +28,7 @@ import { AllowToRoles } from 'src/other/allow.to.role.descriptor';
 import * as fs from 'fs';
 import { RolesGuard } from 'src/other/role.checker.guard';
 import { EditingProductDto } from 'src/dtos/product/editing.product.dto';
+import { ProductSearchDto } from 'src/dtos/product/search.dto';
 
 @Controller('api/product')
 @UseGuards(RolesGuard)
@@ -165,5 +166,13 @@ export class ProductController {
   @AllowToRoles('administrator')
   async delete(@Param('id') id): Promise<DeleteResult | ApiResponse> {
     return this.service.delete(id);
+  }
+
+  @Post('search')
+  @AllowToRoles('administrator', 'customer')
+  async search(
+    @Body() data: ProductSearchDto,
+  ): Promise<Product[] | ApiResponse> {
+    return await this.service.search(data);
   }
 }
