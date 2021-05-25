@@ -9,6 +9,7 @@ import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { Customer } from 'entities/customer.entity';
 import { AddingAndEditingCustomerDto } from 'src/dtos/customer/adding.editing.customer.dto';
 import { CustomerRegistrationDto } from 'src/dtos/customer/customer.registration.dto';
+import { CustomerToken } from 'entities/customer-token.entity';
 //import { CustomerRegistrationDto } from 'src/dtos/customer/customer.registration.dto';
 
 @Injectable()
@@ -16,6 +17,8 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
   constructor(
     @InjectRepository(Customer)
     private readonly customer: Repository<Customer>,
+    @InjectRepository(CustomerToken)
+    private readonly customerToken: Repository<CustomerToken>,
   ) {
     super(customer);
   }
@@ -137,5 +140,52 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
         'Ovaj korisnički nalog već postoji!',
       );
     }
+  }
+
+  async addToken(id: number, token: string, expiresAt: string) {
+    const customerToken = new CustomerToken();
+    customerToken.customerId = id;
+    customerToken.token = token;
+    customerToken.exp = expiresAt;
+
+    return await this.customerToken.save(customerToken);
+  }
+
+  async getToken(token: string): Promise<CustomerToken> {
+    return await this.customerToken.findOne({
+      token: token,
+    });
+  }
+
+  async invalidateToken(token: string): Promise<CustomerToken | ApiResponse> {
+    const customerToken = await this.customerToken.findOne({
+      token: token,
+    });
+
+    if (!customerToken) {
+      return new ApiResponse('error', -10001, 'No such refresh token!');
+    }
+
+    customerToken.isValid = 0;
+
+    await this.customerToken.save(customerToken);
+
+    return await this.getToken(token);
+  }
+
+  async invalidateUserTokens(
+    id: number,
+  ): Promise<(CustomerToken | ApiResponse)[]> {
+    const customerTokens = await this.customerToken.find({
+      customerId: id,
+    });
+
+    const results = [];
+
+    for (const customerToken of customerTokens) {
+      results.push(this.invalidateToken(customerToken.token));
+    }
+
+    return results;
   }
 }

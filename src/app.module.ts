@@ -34,6 +34,7 @@ import { ShoppingCartService } from './services/shoppingCart/shoppingCart.servic
 import { OrderController } from './ctrls/api/order.ctrl';
 import { OrderService } from './services/order/order.service';
 import { AuthorizationMiddleware } from './middlewares/auth.middleware';
+import { CustomerToken } from 'entities/customer-token.entity';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { AuthorizationMiddleware } from './middlewares/auth.middleware';
         ProductShoppingCart,
         Product,
         ShoppingCart,
+        CustomerToken,
       ],
     }),
     TypeOrmModule.forFeature([
@@ -70,6 +72,7 @@ import { AuthorizationMiddleware } from './middlewares/auth.middleware';
       ProductShoppingCart,
       Product,
       ShoppingCart,
+      CustomerToken,
     ]),
   ],
   controllers: [
