@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ShoppingCart } from './shoppingCart.entity';
+import * as Validator from 'class-validator';
 
 @Index('uq_customer_email', ['email'], { unique: true })
 @Index('uq_customer_phone_number', ['phoneNumber'], { unique: true })
@@ -15,9 +16,11 @@ export class Customer {
   customerId: number;
 
   @Column('varchar', { name: 'forename', length: 32, default: () => "'0'" })
+  @Validator.IsNotEmpty()
   forename: string;
 
   @Column('varchar', { name: 'surname', length: 32, default: () => "'0'" })
+  @Validator.IsNotEmpty()
   surname: string;
 
   @Column('varchar', {
@@ -26,12 +29,15 @@ export class Customer {
     length: 24,
     default: () => "'0'",
   })
+  @Validator.IsNotEmpty()
   phoneNumber: string;
 
   @Column('tinytext', { name: 'address' })
+  @Validator.IsNotEmpty()
   address: string;
 
   @Column('varchar', { name: 'city', length: 64, default: () => "'0'" })
+  @Validator.IsNotEmpty()
   city: string;
 
   @Column('varchar', {
@@ -39,6 +45,7 @@ export class Customer {
     length: 5,
     default: () => "'0'",
   })
+  @Validator.IsNotEmpty()
   postalAddress: string;
 
   @Column('varchar', {
@@ -47,6 +54,7 @@ export class Customer {
     length: 128,
     default: () => "'0'",
   })
+  @Validator.IsNotEmpty()
   email: string;
 
   @Column('varchar', {
@@ -54,6 +62,7 @@ export class Customer {
     length: 128,
     default: () => "'0'",
   })
+  @Validator.IsNotEmpty()
   passwordHash: string;
 
   @Column('timestamp', {

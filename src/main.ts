@@ -2,6 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DataStorageConfiguration } from 'config/data.storage.configuration';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -11,6 +12,8 @@ async function bootstrap() {
     maxAge: DataStorageConfiguration.maxAge,
     index: false,
   });
+
+  app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors();
 

@@ -97,7 +97,9 @@ export class AuthController {
 
     if (!customer) {
       return new Promise((resolve) =>
-        resolve(new ApiResponse('error', -3003, 'Unet je pogrešan email!')),
+        resolve(
+          new ApiResponse('error', -3003, 'You entered an unknown email!'),
+        ),
       );
     }
 
@@ -107,7 +109,9 @@ export class AuthController {
 
     if (customer.passwordHash !== passwordHashString) {
       return new Promise((resolve) =>
-        resolve(new ApiResponse('error', -3004, 'Unet je pogrešan password!')),
+        resolve(
+          new ApiResponse('error', -3004, 'You entered the wrong password!'),
+        ),
       );
     }
 

@@ -134,10 +134,27 @@ export class CustomerService extends TypeOrmCrudService<Customer> {
 
       return savedCustomer;
     } catch (e) {
+      console.log(e.sqlMessage);
+
+      if (e.sqlMessage.includes('customer.uq_customer_email')) {
+        return new ApiResponse(
+          'error',
+          -3007,
+          'Customer with this e-mail already exists',
+        );
+      }
+      if (e.sqlMessage.includes('customer.uq_customer_phone_number')) {
+        return new ApiResponse(
+          'error',
+          -3008,
+          'Customer with this phone already exists',
+        );
+      }
+
       return new ApiResponse(
         'error',
         -3006,
-        'Ovaj korisnički nalog već postoji!',
+        'This customer account cannot be created',
       );
     }
   }
