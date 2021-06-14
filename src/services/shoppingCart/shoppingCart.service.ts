@@ -87,6 +87,7 @@ export class ShoppingCartService extends TypeOrmCrudService<ShoppingCart> {
         'productShoppingCarts.product',
         'productShoppingCarts.product.category',
         'productShoppingCarts.product.prices',
+        'productShoppingCarts.product.images',
       ],
     });
   }
