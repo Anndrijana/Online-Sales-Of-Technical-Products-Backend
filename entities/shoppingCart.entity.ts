@@ -8,9 +8,9 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Customer } from './customer.entity';
 import { Order } from './order.entity';
 import { ProductShoppingCart } from './product-shoppingCart.entity';
-import { Customer } from './customer.entity';
 
 @Index('fk_shopping_cart_customer_id', ['customerId'], {})
 @Entity('shopping_cart', { schema: 'technical_products_store' })

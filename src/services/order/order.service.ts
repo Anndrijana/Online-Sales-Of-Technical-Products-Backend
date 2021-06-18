@@ -43,6 +43,7 @@ export class OrderService {
 
     const newOrder: Order = new Order();
     newOrder.cartId = cartId;
+    newOrder.customerId = cart.customerId;
     const savedOrder = await this.order.save(newOrder);
 
     cart.createdAt = new Date();
@@ -60,6 +61,23 @@ export class OrderService {
         'cart.productShoppingCarts.product',
         'cart.productShoppingCarts.product.category',
         'cart.productShoppingCarts.product.prices',
+      ],
+    });
+  }
+
+  async getAllOrdersByCustomerId(customerId: number) {
+    return await this.order.find({
+      where: {
+        customerId: customerId,
+      },
+      relations: [
+        'cart',
+        'cart.customer',
+        'cart.productShoppingCarts',
+        'cart.productShoppingCarts.product',
+        'cart.productShoppingCarts.product.category',
+        'cart.productShoppingCarts.product.prices',
+        'cart.productShoppingCarts.product.images',
       ],
     });
   }

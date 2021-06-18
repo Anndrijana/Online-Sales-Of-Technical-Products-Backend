@@ -9,12 +9,16 @@ import * as crypto from 'crypto';
 import { resolve } from 'node:path';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { ApiResponse } from 'src/other/api.response';
+import { AdministratorToken } from 'entities/administrator-token.entity';
 
 @Injectable()
 export class AdministratorService extends TypeOrmCrudService<Administrator> {
   constructor(
     @InjectRepository(Administrator)
     private readonly administrator: Repository<Administrator>,
+
+    @InjectRepository(AdministratorToken)
+    private readonly administratorToken: Repository<AdministratorToken>,
   ) {
     super(administrator);
   }
@@ -93,5 +97,54 @@ export class AdministratorService extends TypeOrmCrudService<Administrator> {
     currentAdministrator.passwordHash = passwordHashString;
 
     return this.administrator.save(currentAdministrator);
+  }
+
+  async addToken(id: number, token: string, expiresAt: string) {
+    const administratorToken = new AdministratorToken();
+    administratorToken.administratorId = id;
+    administratorToken.token = token;
+    administratorToken.exp = expiresAt;
+
+    return await this.administratorToken.save(administratorToken);
+  }
+
+  async getToken(token: string): Promise<AdministratorToken> {
+    return await this.administratorToken.findOne({
+      token: token,
+    });
+  }
+
+  async invalidateToken(
+    token: string,
+  ): Promise<AdministratorToken | ApiResponse> {
+    const administratorToken = await this.administratorToken.findOne({
+      token: token,
+    });
+
+    if (!administratorToken) {
+      return new ApiResponse('error', -10001, 'No such refresh token!');
+    }
+
+    administratorToken.isValid = 0;
+
+    await this.administratorToken.save(administratorToken);
+
+    return await this.getToken(token);
+  }
+
+  async invalidateAdministratorTokens(
+    id: number,
+  ): Promise<(AdministratorToken | ApiResponse)[]> {
+    const administratorTokens = await this.administratorToken.find({
+      administratorId: id,
+    });
+
+    const results = [];
+
+    for (const administratorToken of administratorTokens) {
+      results.push(this.invalidateToken(administratorToken.token));
+    }
+
+    return results;
   }
 }

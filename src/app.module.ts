@@ -35,6 +35,7 @@ import { OrderController } from './ctrls/api/order.ctrl';
 import { OrderService } from './services/order/order.service';
 import { AuthorizationMiddleware } from './middlewares/auth.middleware';
 import { CustomerToken } from 'entities/customer-token.entity';
+import { AdministratorToken } from 'entities/administrator-token.entity';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { CustomerToken } from 'entities/customer-token.entity';
         Product,
         ShoppingCart,
         CustomerToken,
+        AdministratorToken,
       ],
     }),
     TypeOrmModule.forFeature([
@@ -73,6 +75,7 @@ import { CustomerToken } from 'entities/customer-token.entity';
       Product,
       ShoppingCart,
       CustomerToken,
+      AdministratorToken,
     ]),
   ],
   controllers: [

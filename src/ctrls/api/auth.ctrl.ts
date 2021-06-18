@@ -23,6 +23,8 @@ import { LoginCustomerDto } from 'src/dtos/customer/login.customer.dto';
 import { CustomerRegistrationDto } from 'src/dtos/customer/customer.registration.dto';
 import { JwtDataRefreshCustomerDto } from 'src/dtos/customer/jwt.data.refresh.dto';
 import { CustomerRefreshTokenDto } from 'src/dtos/customer/refresh.token.dto';
+import { AdministratorRefreshTokenDto } from 'src/dtos/administrator/refresh.token.dto';
+import { JwtDataRefreshAdministratorDto } from 'src/dtos/administrator/jwt.data.refresh.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -42,7 +44,7 @@ export class AuthController {
 
     if (!administrator) {
       return new Promise((resolve) =>
-        resolve(new ApiResponse('error', -3003, 'Unet je pogrešan username!')),
+        resolve(new ApiResponse('error', -3003, 'Username is invalid!')),
       );
     }
 
@@ -52,7 +54,7 @@ export class AuthController {
 
     if (administrator.passwordHash !== passwordHashString) {
       return new Promise((resolve) =>
-        resolve(new ApiResponse('error', -3004, 'Unet je pogrešan password!')),
+        resolve(new ApiResponse('error', -3004, 'Password is invalid!')),
       );
     }
 
@@ -74,13 +76,107 @@ export class AuthController {
     );
     console.log(token);
 
+    const jwtRefreshAdministratorData = new JwtDataRefreshAdministratorDto();
+    jwtRefreshAdministratorData.role = jwtData.role;
+    jwtRefreshAdministratorData.id = jwtData.id;
+    jwtRefreshAdministratorData.identity = jwtData.identity;
+    jwtRefreshAdministratorData.exp = this.getDatePlus(60 * 60 * 24 * 31);
+    jwtRefreshAdministratorData.ip = jwtData.ip;
+    jwtRefreshAdministratorData.ua = jwtData.ua;
+
+    const refreshAdministratorToken: string = jwt.sign(
+      jwtRefreshAdministratorData.toPlainObject(),
+      jwtSecretInformation,
+    );
+
     const responseObj = new LoginInformationAdministratorDto(
       administrator.administratorId,
       administrator.username,
       token,
+      refreshAdministratorToken,
+      this.getIsoDate(jwtRefreshAdministratorData.exp),
+    );
+
+    await this.administratorService.addToken(
+      administrator.administratorId,
+      refreshAdministratorToken,
+      this.getDatabseDateFormat(
+        this.getIsoDate(jwtRefreshAdministratorData.exp),
+      ),
     );
 
     return new Promise((resolve) => resolve(responseObj));
+  }
+
+  @Post('administrator/refresh')
+  async administratorRefreshToken(
+    @Req() req: Request,
+    @Body() data: AdministratorRefreshTokenDto,
+  ): Promise<LoginInformationAdministratorDto | ApiResponse> {
+    const administratorToken = await this.administratorService.getToken(
+      data.token,
+    );
+
+    if (!administratorToken) {
+      return new ApiResponse('error', -20001, 'No such refresh token!');
+    }
+
+    if (administratorToken.isValid === 0) {
+      return new ApiResponse('error', -20002, 'The token is no longer valid!');
+    }
+
+    const now = new Date();
+    const exp = new Date(administratorToken.exp);
+
+    if (exp.getTime() < now.getTime()) {
+      return new ApiResponse('error', -10004, 'The token has expired!');
+    }
+
+    let jwtRefreshAdministratorData: JwtDataRefreshAdministratorDto;
+
+    try {
+      jwtRefreshAdministratorData = jwt.verify(
+        data.token,
+        jwtSecretInformation,
+      ) as any;
+    } catch (e) {
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (!jwtRefreshAdministratorData) {
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (jwtRefreshAdministratorData.ip !== req.ip.toString()) {
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+    }
+
+    if (jwtRefreshAdministratorData.ua !== req.headers['user-agent']) {
+      throw new HttpException('Bad token found', HttpStatus.UNAUTHORIZED);
+    }
+
+    const jwtDataAdministrator = new JwtDataAdministratorDto();
+    jwtDataAdministrator.role = jwtRefreshAdministratorData.role;
+    jwtDataAdministrator.id = jwtRefreshAdministratorData.id;
+    jwtDataAdministrator.identity = jwtRefreshAdministratorData.identity;
+    jwtDataAdministrator.exp = this.getDatePlus(60 * 5);
+    jwtDataAdministrator.ip = jwtRefreshAdministratorData.ip;
+    jwtDataAdministrator.ua = jwtRefreshAdministratorData.ua;
+
+    const token: string = jwt.sign(
+      jwtDataAdministrator.toPlainObject(),
+      jwtSecretInformation,
+    );
+
+    const responseObject = new LoginInformationAdministratorDto(
+      jwtDataAdministrator.id,
+      jwtDataAdministrator.identity,
+      token,
+      data.token,
+      this.getIsoDate(jwtRefreshAdministratorData.exp),
+    );
+
+    return responseObject;
   }
 
   @Put('customer/register')

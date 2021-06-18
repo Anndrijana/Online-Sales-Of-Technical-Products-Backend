@@ -5,8 +5,9 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { ShoppingCart } from './shoppingCart.entity';
 import * as Validator from 'class-validator';
+import { ShoppingCart } from './shoppingCart.entity';
+import { Order } from './order.entity';
 
 @Index('uq_customer_email', ['email'], { unique: true })
 @Index('uq_customer_phone_number', ['phoneNumber'], { unique: true })
@@ -84,4 +85,7 @@ export class Customer {
 
   @OneToMany(() => ShoppingCart, (shoppingCart) => shoppingCart.customer)
   shoppingCarts: ShoppingCart[];
+
+  @OneToMany(() => Order, (order) => order.customer)
+  orders: Order[];
 }

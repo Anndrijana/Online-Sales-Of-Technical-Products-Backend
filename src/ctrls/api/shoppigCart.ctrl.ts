@@ -114,4 +114,10 @@ export class ShoppingCartController {
   ): Promise<ShoppingCart | ApiResponse> {
     return this.service.add(data);
   }
+
+  @Get('orders')
+  @AllowToRoles('customer')
+  async getCustomerOrders(@Req() req: Request): Promise<Order[]> {
+    return await this.orderService.getAllOrdersByCustomerId(req.token.id);
+  }
 }
