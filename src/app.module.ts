@@ -1,3 +1,6 @@
+import { ProductVisitorsService } from './services/productVisitors/productVisitors.service';
+import { CategoryVisitorsService } from './services/categoryVisitors/categoryVisitors.service';
+import { CategoryVisitorsController } from './ctrls/api/category.visitors.ctrl';
 import { FeatureController } from './ctrls/api/feature.ctrl';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CategoryService } from './services/category/category.service';
@@ -36,6 +39,7 @@ import { OrderService } from './services/order/order.service';
 import { AuthorizationMiddleware } from './middlewares/auth.middleware';
 import { CustomerToken } from 'entities/customer-token.entity';
 import { AdministratorToken } from 'entities/administrator-token.entity';
+import { ProductVisitorsController } from './ctrls/api/product.visitors.ctrl';
 
 @Module({
   imports: [
@@ -89,6 +93,8 @@ import { AdministratorToken } from 'entities/administrator-token.entity';
     PriceController,
     ShoppingCartController,
     OrderController,
+    CategoryVisitorsController,
+    ProductVisitorsController,
   ],
   providers: [
     AdministratorService,
@@ -100,6 +106,8 @@ import { AdministratorToken } from 'entities/administrator-token.entity';
     ImageService,
     ShoppingCartService,
     OrderService,
+    CategoryVisitorsService,
+    ProductVisitorsService,
   ],
   exports: [AdministratorService, CustomerService],
 })
@@ -107,7 +115,7 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthorizationMiddleware)
-      .exclude('auth/*')
+      .exclude('auth/*', 'visitor/*')
       .forRoutes('api/*');
   }
 }
