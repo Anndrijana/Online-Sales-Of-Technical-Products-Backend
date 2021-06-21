@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -59,6 +60,25 @@ export class OrderController {
   @AllowToRoles('customer')
   async delete(@Param('id') id): Promise<DeleteResult | ApiResponse> {
     return this.service.delete(id);
+  }
+
+  @Get()
+  @AllowToRoles('administrator')
+  async getAll(): Promise<Order[]> {
+    return await this.service.getAll();
+  }
+
+  // GET http://localhost:3000/api/order/:id/
+  @Get(':id')
+  @AllowToRoles('administrator')
+  async get(@Param('id') id: number): Promise<Order | ApiResponse> {
+    const order = await this.service.getById(id);
+
+    if (!order) {
+      return new ApiResponse('error', -9001, 'No such order found!');
+    }
+
+    return order;
   }
 
   @Patch(':id')

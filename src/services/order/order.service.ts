@@ -146,6 +146,20 @@ export class OrderService {
     return await this.order.delete(id);
   }
 
+  async getAll() {
+    return await this.order.find({
+      relations: [
+        'cart',
+        'cart.customer',
+        'cart.productShoppingCarts',
+        'cart.productShoppingCarts.product',
+        'cart.productShoppingCarts.product.category',
+        'cart.productShoppingCarts.product.prices',
+        'cart.productShoppingCarts.product.images',
+      ],
+    });
+  }
+
   async changeStatus(
     orderId: number,
     newStatus: 'rejected' | 'accepted' | 'shipped' | 'unresolved',

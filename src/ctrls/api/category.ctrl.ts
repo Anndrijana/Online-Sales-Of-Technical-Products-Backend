@@ -8,7 +8,6 @@ import { RolesGuard } from 'src/other/role.checker.guard';
 import { CategoryService } from 'src/services/category/category.service';
 
 @Controller('api/category')
-@UseGuards(RolesGuard)
 @Crud({
   model: {
     type: Category,
@@ -31,7 +30,13 @@ import { CategoryService } from 'src/services/category/category.service';
     },
   },
   routes: {
-    only: ['getManyBase', 'getOneBase', 'deleteOneBase'],
+    only: [
+      'getManyBase',
+      'getOneBase',
+      'deleteOneBase',
+      'updateOneBase',
+      'createOneBase',
+    ],
     getManyBase: {
       decorators: [
         UseGuards(RolesGuard),
@@ -47,12 +52,19 @@ import { CategoryService } from 'src/services/category/category.service';
     deleteOneBase: {
       decorators: [UseGuards(RolesGuard), AllowToRoles('administrator')],
     },
+    updateOneBase: {
+      decorators: [UseGuards(RolesGuard), AllowToRoles('administrator')],
+    },
+    createManyBase: {
+      decorators: [UseGuards(RolesGuard), AllowToRoles('administrator')],
+    },
   },
 })
 export class CategoryController {
   constructor(public service: CategoryService) {}
 
   @Put()
+  @UseGuards(RolesGuard)
   @AllowToRoles('administrator')
   addCategory(
     @Body() data: AddingAndEditingCategoryDto,
@@ -61,6 +73,7 @@ export class CategoryController {
   }
 
   @Post(':id')
+  @UseGuards(RolesGuard)
   @AllowToRoles('administrator')
   editCategory(
     @Param('id') categoryId: number,

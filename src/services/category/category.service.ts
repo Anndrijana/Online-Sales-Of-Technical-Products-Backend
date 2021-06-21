@@ -17,7 +17,7 @@ export class CategoryService extends TypeOrmCrudService<Category> {
 
   add(data: AddingAndEditingCategoryDto): Promise<Category | ApiResponse> {
     const newCategory: Category = new Category();
-    newCategory.categoryName = data.name;
+    newCategory.categoryName = data.categoryName;
     newCategory.imagePath = data.imagePath;
     newCategory.parentCategoryId = data.parentCategoryId;
 
@@ -55,7 +55,7 @@ export class CategoryService extends TypeOrmCrudService<Category> {
       });
     }
 
-    currentCategory.categoryName = data.name;
+    currentCategory.categoryName = data.categoryName;
     currentCategory.imagePath = data.imagePath;
     currentCategory.parentCategoryId = data.parentCategoryId;
 

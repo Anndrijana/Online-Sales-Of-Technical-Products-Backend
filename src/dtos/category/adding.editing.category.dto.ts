@@ -1,5 +1,5 @@
 export class AddingAndEditingCategoryDto {
-  name: string;
+  categoryName: string;
   imagePath: string;
   parentCategoryId: number;
 }
