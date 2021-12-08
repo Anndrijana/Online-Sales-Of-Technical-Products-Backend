@@ -1,16 +1,16 @@
 export class EditingProductDto {
-  name: string;
-  shortDescription: string;
-  detailedDescription: string;
-  status: 'available' | 'visible' | 'hidden';
+  productName: string;
+  shortDesc: string;
+  detailedDesc: string;
+  productStatus: 'available' | 'visible' | 'hidden';
   isPromoted: 0 | 1;
-  amount: number;
   categoryId: number;
   price: number;
-  features:
+  productAmount: number;
+  /*features:
     | {
         featureId: number;
         value: string;
       }[]
-    | null;
+    | null;*/
 }

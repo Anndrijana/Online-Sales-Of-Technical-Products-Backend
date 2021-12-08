@@ -79,7 +79,7 @@ export class ProductController {
     public imageService: ImageService,
   ) {}
 
-  @Put()
+  @Post()
   @AllowToRoles('administrator')
   addProduct(@Body() data: AddingProductDto): Promise<Product | ApiResponse> {
     return this.service.add(data);

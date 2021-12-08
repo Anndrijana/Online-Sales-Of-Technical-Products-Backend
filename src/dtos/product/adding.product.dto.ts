@@ -1,12 +1,13 @@
 export class AddingProductDto {
-  name: string;
-  shortDescription: string;
-  detailedDescription: string;
-  amount: number;
+  productName: string;
+  shortDesc: string;
+  detailedDesc: string;
+  /*amount: number;*/
   categoryId: number;
   price: number;
-  features: {
+  productAmount: number;
+  /*features: {
     featureId: number;
     value: string;
-  }[];
+  }[];*/
 }

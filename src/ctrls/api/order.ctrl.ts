@@ -70,7 +70,7 @@ export class OrderController {
 
   // GET http://localhost:3000/api/order/:id/
   @Get(':id')
-  @AllowToRoles('administrator')
+  @AllowToRoles('administrator', 'customer')
   async get(@Param('id') id: number): Promise<Order | ApiResponse> {
     const order = await this.service.getById(id);
 

@@ -27,11 +27,11 @@ export class ProductService extends TypeOrmCrudService<Product> {
 
   async add(data: AddingProductDto): Promise<Product | ApiResponse> {
     const newProduct: Product = new Product();
-    newProduct.productName = data.name;
-    newProduct.shortDesc = data.shortDescription;
-    newProduct.detailedDesc = data.detailedDescription;
-    newProduct.productAmount = data.amount;
+    newProduct.productName = data.productName;
+    newProduct.shortDesc = data.shortDesc;
+    newProduct.detailedDesc = data.detailedDesc;
     newProduct.categoryId = data.categoryId;
+    newProduct.productAmount = data.productAmount;
 
     const savedProduct = await this.product.save(newProduct);
 
@@ -41,17 +41,21 @@ export class ProductService extends TypeOrmCrudService<Product> {
 
     await this.price.save(newPrice);
 
-    for (const feature of data.features) {
+    /*for (const feature of data.features) {
       const newProductFeature: ProductFeature = new ProductFeature();
       newProductFeature.productId = savedProduct.productId;
       newProductFeature.featureId = feature.featureId;
       newProductFeature.value = feature.value;
 
       await this.productFeature.save(newProductFeature);
-    }
+    }*/
+
+    /*return await this.product.findOne(savedProduct.productId, {
+      relations: ['category', 'productFeatures', 'prices'],
+    });*/
 
     return await this.product.findOne(savedProduct.productId, {
-      relations: ['category', 'productFeatures', 'prices'],
+      relations: ['category', 'prices'],
     });
   }
 
@@ -67,13 +71,13 @@ export class ProductService extends TypeOrmCrudService<Product> {
       return new ApiResponse('error', -5001, 'Product not found.');
     }
 
-    currentProduct.productName = data.name;
-    currentProduct.shortDesc = data.shortDescription;
-    currentProduct.detailedDesc = data.detailedDescription;
-    currentProduct.productStatus = data.status;
+    currentProduct.productName = data.productName;
+    currentProduct.shortDesc = data.shortDesc;
+    currentProduct.detailedDesc = data.detailedDesc;
+    currentProduct.productStatus = data.productStatus;
     currentProduct.isPromoted = data.isPromoted;
-    currentProduct.productAmount = data.amount;
     currentProduct.categoryId = data.categoryId;
+    currentProduct.productAmount = data.productAmount;
 
     const savedProduct = await this.product.save(currentProduct);
     if (!savedProduct) {
@@ -104,7 +108,7 @@ export class ProductService extends TypeOrmCrudService<Product> {
       }
     }
 
-    if (data.features !== null) {
+    /*if (data.features !== null) {
       await this.productFeature.remove(currentProduct.productFeatures);
 
       for (const feature of data.features) {
@@ -119,6 +123,10 @@ export class ProductService extends TypeOrmCrudService<Product> {
 
     return await this.product.findOne(productId, {
       relations: ['category', 'features', 'productFeatures', 'prices'],
+    });*/
+
+    return await this.product.findOne(productId, {
+      relations: ['category', 'prices'],
     });
   }
 
@@ -127,13 +135,7 @@ export class ProductService extends TypeOrmCrudService<Product> {
 
     if (currentProduct === undefined) {
       return new Promise((resolve) => {
-        resolve(
-          new ApiResponse(
-            'error',
-            -3001,
-            'Proizvod sa traženim id-jem ne postoji!',
-          ),
-        );
+        resolve(new ApiResponse('error', -3001, 'The product does not exist!'));
       });
     }
 
@@ -224,7 +226,7 @@ export class ProductService extends TypeOrmCrudService<Product> {
       return new ApiResponse(
         'Ok',
         0,
-        'No products found for these search parameters.',
+        'No products found for these search parameters!',
       );
     }
 
